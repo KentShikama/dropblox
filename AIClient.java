@@ -9,7 +9,7 @@ public class AIClient {
 		System.out.flush();
 	}
 
-    public int chooseTopThree(ArrayList<Board> boards){
+    public ArrayList<Board> chooseTopThree(ArrayList<Board> boards){
     	ArrayList<int> scores = new ArrayList<int>(boards.size());
     	for (int i=0;i<boards.size;i++){
     		scores.set(i,Score.score(board.get(i)));
