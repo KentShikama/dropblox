@@ -58,6 +58,25 @@ public class Score {
         return num_holes;
     }
 
+    public int calculateBumpiness(Board board){
+        ArrayList<Integer> heights = new ArrayList<Integer>(board.COLS);
+        for(int j=0;j<board.COLS;j++){
+            for(int i=0;j<boards.ROWS;i++){
+                if (board._bitmap(i,j)!=0){
+                    int height = board.ROWS-i;
+                    heights.set(j,height);
+                    break;
+                }
+            }
+        }
+        int bumpiness = 0;
+        for(int i=0;i<heights.size()-1;i++){
+            int bump = Math.abs(heights.get(i+1)-heights.get(i));
+            bumpiness = bumpiness + bump;
+        }
+        return bumpiness;
+    }
+
     /**
      * Adapted from http://stackoverflow.com/questions/15449711/transpose-double-matrix-with-a-java-function
      */
