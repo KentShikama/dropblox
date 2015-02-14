@@ -31,7 +31,7 @@ public class Score {
         return aggregateHeight;
     }
 
-    private int calculateMaxHeight(Board board) {
+    private static int calculateMaxHeight(Board board) {
         int height = 0;
         for (int i = 0; i < board.ROWS; i++) {
             for (int j = 0; j < board.COLUMNS; j++) {
@@ -58,7 +58,7 @@ public class Score {
         return num_holes;
     }
 
-    public int calculateBumpiness(Board board){
+    private static int calculateBumpiness(Board board){
         ArrayList<Integer> heights = new ArrayList<Integer>(board.COLS);
         for(int j=0;j<board.COLS;j++){
             for(int i=0;j<boards.ROWS;i++){

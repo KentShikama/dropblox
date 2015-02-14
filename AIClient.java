@@ -2,10 +2,11 @@ import java.util.*;
 import org.json.simple.*;
 
 public class AIClient {
+	
+	public static final int BREADTH = 1;
 
 	public static void main(String[] argv) {
 		Map<ArrayList<String>, Board> boards = generateBoards((JSONObject)JSONValue.parse(argv[0]));
-
 		System.out.flush();
 	}
 
@@ -14,8 +15,8 @@ public class AIClient {
     	for (int i=0;i<boards.size;i++){
     		scores.set(i,Score.score(board.get(i)));
     	}
-    	ArrayList<Board> best = new ArrayList<Board>(3);
-    	for(int i=0;i<3;i++){
+    	ArrayList<Board> best = new ArrayList<Board>(BREADTH);
+    	for(int i=0;i < BREADTH;i++){
     		int max = Collection.max(scores);
     		int index = scores.indexOf(max);
     		best.add(boards.get(index));
