@@ -10,5 +10,21 @@ public class AIClient {
             System.out.println("left");
         }
         System.out.flush();
+    }    
+
+      public int chooseTopThree(ArrayList<Board> boards){
+    	ArrayList<int> scores = new ArrayList<int>(boards.size());
+    	for (int i=0;i<boards.size;i++){
+    		scores.set(i,Score.score(board.get(i)));
+    	}
+    	ArrayList<Board> best = new ArrayList<Board>(3);
+    	for(int i=0;i<3;i++){
+    		int max = Collection.max(scores);
+    		int index = scores.indexOf(max);
+    		best.add(boards.get(index));
+    		scores.remove(max);
+    		boards.remove(boards.get(index));
+    	}
+    	return best;
     }
 }
