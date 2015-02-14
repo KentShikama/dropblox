@@ -2,11 +2,14 @@ import java.util.*;
 import org.json.simple.*;
 
 public class AIClient {
-	
+
 	public static final int BREADTH = 1;
 
 	public static void main(String[] argv) {
-		Map<ArrayList<String>, Board> boards = generateBoards((JSONObject)JSONValue.parse(argv[0]));
+		Board board = Board.initializeBoardFromJSON((JSONObject)JSONValue.parse(argv[0]));
+
+		Map<ArrayList<String>, Board> boards = generateBoards(board);
+
 		System.out.flush();
 	}
 
@@ -26,8 +29,9 @@ public class AIClient {
     	return best;
     }
 
-	private Map<ArrayList<String>, Board> generateBoards(JSONObject jsonBoard) {
-		Board board = Board.initializeBoardFromJSON(jsonBoard);
+	private Map<ArrayList<String>, Board> generateBoards(Board board) {
+		// save a copy of the initial board before we run any commands on it and mutate it
+		Board boardCopy = new Board(board._bitmap, board._block, board._preview);
 
 		ArrayList<Board> boards = new ArrayList<Board>();
 		ArrayList<String> commands = new ArrayList<String>();
@@ -65,7 +69,8 @@ public class AIClient {
 
 				// reset for next iteration
 				commands = new ArrayList<String>();
-				board = Board.initializeBoardFromJSON(obj);
+				board = boardCopy;
+				boardCopy = new Board(board._bitmap, board._block, board._preview);
 			}
 		}
 
