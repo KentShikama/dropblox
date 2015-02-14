@@ -3,3 +3,9 @@ Please visit http://playdropblox.com/dropblox_intro.html for the latest document
 Windows users: 
 dropblox_ai.bat is a batch file that will execute python dropblox_ai
 If dropblox_ai is not a python script, delete this file.
+
+AIClient.java has the main AI logic, the rest of the Java files are the necessary support classes.
+
+To compile: javac -cp json_simple-1.1.jar *.java
+
+To run: dropblox_ai is a python executable that launches AIClient and passes it the necessary command line arguments.  Replace the dropblox_ai in your working directory with this one, and run the client as normal.
