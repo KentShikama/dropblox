@@ -11,4 +11,32 @@ public class AIClient {
 		}
 		System.out.flush();
 	}
+
+	public int maxHeight(Board board){
+		int height = 0;
+		for(int i=0;i<board.ROWS;i++){
+			for(int j=0;j<board.COLUMNS;j++){
+				if (board._bitmap[i][j]!=0){
+					height = 32-i;
+					break;
+				}
+			}
+		}
+		return height;
+	}
+
+	public int num_holes(Board board){
+		boolean start_counting = false;
+		int num_holes = 0;
+		int height = this.maxHeight(board);
+		for(int i=board.ROWS-height;i<board.ROWS;i++){
+			for(int j=0;j<board.COLUMNS;j++){
+				if (board._bitmap[i][j]==0){
+					num_holes++;
+				}
+		}
+	}
+	return num_holes;
+}
+
 }
