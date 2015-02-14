@@ -1,13 +1,17 @@
 public class Score {
-    private static final int AGGREGATE_HEIGHT_CONSTANT = -1;
-    private static final int MAX_HEIGHT_CONSTANT = -1;
-    private static final int NUMBER_OF_HOLES_CONSTANT = -1;
+    private static final int AGGREGATE_HEIGHT_CONSTANT = -2;
+    private static final int MAX_HEIGHT_CONSTANT = -4;
+    private static final int NUMBER_OF_HOLES_CONSTANT = -2;
+    private static final int BUMPINESS_CONSTANT = -1;
 
     public static int score(Board board) {
         int aggregateHeight = calculateAggregateHeight(board);
         int maxHeight = calculateMaxHeight(board);
         int num_holes = calculateNumberOfHoles(board);
-        return AGGREGATE_HEIGHT_CONSTANT * aggregateHeight + MAX_HEIGHT_CONSTANT * maxHeight + NUMBER_OF_HOLES_CONSTANT * num_holes;
+        int bumpiness = calculateBumpiness(board);
+        return AGGREGATE_HEIGHT_CONSTANT * aggregateHeight 
+                + MAX_HEIGHT_CONSTANT * maxHeight + NUMBER_OF_HOLES_CONSTANT * num_holes
+                    + BUMPINESS_CONSTANT * bumpiness;
     }
 
     private static int calculateAggregateHeight(Board board) {
