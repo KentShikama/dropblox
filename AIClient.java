@@ -3,8 +3,13 @@ import org.json.simple.*;
 
 public class AIClient {
 
+	public static void main(String[] argv) {
+		Map<ArrayList<String>, Board> boards = generateBoards((JSONObject)JSONValue.parse(argv[0]));
 
-      public int chooseTopThree(ArrayList<Board> boards){
+		System.out.flush();
+	}
+
+    public int chooseTopThree(ArrayList<Board> boards){
     	ArrayList<int> scores = new ArrayList<int>(boards.size());
     	for (int i=0;i<boards.size;i++){
     		scores.set(i,Score.score(board.get(i)));
@@ -20,15 +25,8 @@ public class AIClient {
     	return best;
     }
 
-	public static void main(String[] argv) {
-		Map<ArrayList<String>, Board> boards = generateBoards();
-
-		System.out.flush();
-	}
-
-	private Map<ArrayList<String>, Board> generateBoards(Board board) {
-		JSONObject obj = (JSONObject)JSONValue.parse(argv[0]);
-		Board board = Board.initializeBoardFromJSON(obj);
+	private Map<ArrayList<String>, Board> generateBoards(JSONObject jsonBoard) {
+		Board board = Board.initializeBoardFromJSON(jsonBoard);
 
 		ArrayList<Board> boards = new ArrayList<Board>();
 		ArrayList<String> commands = new ArrayList<String>();
@@ -36,13 +34,12 @@ public class AIClient {
 		// map of <commands, board>
 		Map<ArrayList<String>, Board> boards = new HashMap<ArrayList<String>, Board>();
 
-		// first, start by moving the piece all the way to the left
-		for (int i = 0; i < 5; i++) {
-			commands.add('left');
-		}
-
-		// then, move the block one position to the right, one at a time
+		// move the block one position to the right, one at a time
 		for (int i = 0; i < board.COLS; i++) {
+			// but first, start by moving the piece all the way to the left
+			for (int a = 0; a < 5; a++) {
+				commands.add('left');
+			}
 
 			// include the previous 'right' commands
 			for (int j = 0; j <= i; j++) {
