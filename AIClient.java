@@ -11,4 +11,32 @@ public class AIClient {
 		}
 		System.out.flush();
 	}
+	
+	public int calculateAggregateHeight(Board board) {
+		int[][] bitmap = board._bitmap;
+		int[][] transposedBitmap = transposeMatrix(bitmap);
+		int aggregateHeight = 0;
+		for (int[] row : transposedBitmap) {
+			// Each row is actually a column as it is transposed
+			for (int i = 0; i < row.length; i++) {
+				// i = 0 is the top and i = row.length is the bottom
+				// hence row.length - the position of the first non zero row[i] is the height of that column
+				if (row[i] != 0) {
+					aggregateHeight += row.length - i;
+				}
+			}
+		}
+		return aggregateHeight;
+	}
+
+	/**
+	 * Adapted from http://stackoverflow.com/questions/15449711/transpose-double-matrix-with-a-java-function
+	 */
+	private static double[][] transposeMatrix(int [][] m){
+		int[][] temp = new int[m[0].length][m.length];
+		for (int i = 0; i < m.length; i++)
+			for (int j = 0; j < m[0].length; j++)
+				temp[j][i] = m[i][j];
+		return temp;
+	}
 }
