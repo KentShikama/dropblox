@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Score {
     private static final int AGGREGATE_HEIGHT_CONSTANT = -2;
     private static final int MAX_HEIGHT_CONSTANT = -4;
@@ -34,7 +36,7 @@ public class Score {
     private static int calculateMaxHeight(Board board) {
         int height = 0;
         for (int i = 0; i < board.ROWS; i++) {
-            for (int j = 0; j < board.COLUMNS; j++) {
+            for (int j = 0; j < board.COLS; j++) {
                 if (board._bitmap[i][j] != 0) {
                     height = 32 - i;
                     break;
@@ -47,9 +49,9 @@ public class Score {
     private static int calculateNumberOfHoles(Board board) {
         boolean start_counting = false;
         int num_holes = 0;
-        int height = this.calculateMaxHeight(board);
+        int height = Score.calculateMaxHeight(board);
         for (int i = board.ROWS - height; i < board.ROWS; i++) {
-            for (int j = 0; j < board.COLUMNS; j++) {
+            for (int j = 0; j < board.COLS; j++) {
                 if (board._bitmap[i][j] == 0) {
                     num_holes++;
                 }
@@ -61,8 +63,8 @@ public class Score {
     private static int calculateBumpiness(Board board){
         ArrayList<Integer> heights = new ArrayList<Integer>(board.COLS);
         for(int j=0;j<board.COLS;j++){
-            for(int i=0;j<boards.ROWS;i++){
-                if (board._bitmap(i,j)!=0){
+            for(int i=0;j<board.ROWS;i++){
+                if (board._bitmap[i][j]!=0){
                     int height = board.ROWS-i;
                     heights.set(j,height);
                     break;
@@ -80,7 +82,7 @@ public class Score {
     /**
      * Adapted from http://stackoverflow.com/questions/15449711/transpose-double-matrix-with-a-java-function
      */
-    private static double[][] transposeMatrix(int[][] m) {
+    private static int[][] transposeMatrix(int[][] m) {
         int[][] temp = new int[m[0].length][m.length];
         for (int i = 0; i < m.length; i++)
             for (int j = 0; j < m[0].length; j++)
