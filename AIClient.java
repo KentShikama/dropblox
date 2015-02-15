@@ -1,3 +1,6 @@
+import java.lang.Exception;
+import java.lang.String;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,87 +13,61 @@ public class AIClient {
 
 	public static void main(String[] argv) {
 		Board originalBoard = Board.initializeBoardFromJSON((JSONObject) JSONValue.parse(argv[0]));
-		Map<Board, ArrayList<String>> generatedBoardsMap = generateBoards(originalBoard);
-		Board bestBoard1 = chooseTop(new ArrayList<Board>(generatedBoardsMap.keySet()));
-
-	//	Board blockChangedBoard = new Board(bestBoard1._bitmap, bestBoard1._preview[0], bestBoard1._preview); // Change later
-	//	Map<Board, ArrayList<String>> generatedBoardsMap2 = generateBoards(blockChangedBoard);
-	//	Board bestBoard2 = chooseTop(new ArrayList<Board>(generatedBoardsMap2.keySet()));
-	//	bestBoardToBestThreeBoards.put(bestBoardOfBestThreeBoards, board);
-
-	//	Set<Board> bestBoards = bestBoardToBestThreeBoards.keySet();
-	//	Board bestBoard = chooseTop(new ArrayList<Board>(bestBoards));
-		Board parentBoard = bestBoardToBestThreeBoards.get(bestBoard);
-		ArrayList<String> commands = generatedBoardsMap.get(parentBoard);
-		
-		for (String command : commands) {
+		ArrayList<ArrayList<String>> generatedMoves = generateMoves();
+		Map<Board, ArrayList<String>> generatedBoardsMap = generateBoards(originalBoard, generatedMoves);
+		ArrayList<String> bestCommands = chooseTop(generatedBoardsMap);
+		for (String command : bestCommands) {
 			System.out.println(command);
 		}
 		System.out.flush();
 	}
 
-    public static ArrayList<Board> chooseTopThree(ArrayList<Board> boards){
-
-    }
-
-	public static Board chooseTop(ArrayList<Board> boards){
-		int maxScore = -100000000;
-		Board bestBoard = boards.get(0);
-		for (Board board: boards) {
+	public static ArrayList<String> chooseTop(Map<Board, ArrayList<String>> generatedBoardsMap){
+		int maxScore = -999999999;
+		ArrayList<String> bestMoves = null;
+		for (Map.Entry<Board, ArrayList<String>> entry : generatedBoardsMap.entrySet()) {
+			Board board = entry.getKey();
 			if (Score.score(board) > maxScore) {
 				maxScore = Score.score(board);
-				bestBoard = board;
+				bestMoves = entry.getValue();
 			}
 		}
-		return bestBoard;
+		return bestMoves;
+	}
+	
+	private static Map<Board, ArrayList<String>> generateBoards(Board board, ArrayList<ArrayList<String>> generatedMoves) {
+		Map<Board, ArrayList<String>> boards = new HashMap<>();
+		for (ArrayList<String> moves: generatedMoves) {
+			Board boardCopy = new Board(board._bitmap, board._block, board._preview);
+			try {
+				Board newBoard = boardCopy.doCommands(moves);
+				boards.put(newBoard, moves);
+			} catch(Exception e) {
+			//	e.printStackTrace();
+			}
+		}
+		return boards;
 	}
 
-	private static Map<Board, ArrayList<String>> generateBoards(Board board) {
-		// save a copy of the initial board before we run any commands on it and mutate it
-		Board boardCopy = new Board(board._bitmap, board._block, board._preview);
-
-//		ArrayList<Board> boards = new ArrayList<Board>();
-		ArrayList<String> commands = new ArrayList<String>();
-
-		// map of <commands, board>
-		Map<Board, ArrayList<String>> boards = new HashMap<Board, ArrayList<String>>();
-
-		// move the block one position to the right, one at a time
-		for (int i = 0; i < board.COLS; i++) {
-			// but first, start by moving the piece all the way to the left
+	private static ArrayList<ArrayList<String>> generateMoves() {
+		ArrayList<ArrayList<String>> moves = new ArrayList<>();
+		for (int i = 0; i < Board.COLS; i++) {
+			ArrayList<String> commands = new ArrayList<String>();
 			for (int a = 0; a < 5; a++) {
 				commands.add("left");
 			}
-
-			// include the previous 'right' commands
-			for (int j = 0; j <= i; j++) {
+			for (int j = 0; j < i; j++) {
 				commands.add("right");
 			}
-
-			// then, rotate the block to every possible position, one at a time
 			for (int k = 0; k < 3; k++) {
-
-				// include the previous 'rotate' commands
-				for (int l = 0; l <= k; l++) {
-					commands.add("rotate");
+				ArrayList<String> commands2 = new ArrayList<String>(commands);
+				for (int l = 0; l < k; l++) {
+					commands2.add("rotate");
 				}
-
-				// perform the commands on the board, and then add it to the hash map, with respect to its command list
-				try {
-					boards.put(board.doCommands(commands), commands);
-				}
-				catch (InvalidMoveException e) {
-					// do nothing
-				}
-
-				// reset for next iteration
-				commands = new ArrayList<String>();
-				board = boardCopy;
-				boardCopy = new Board(board._bitmap, board._block, board._preview);
+				moves.add(commands2);
 			}
 		}
-
-		return boards;
+		return moves;
 	}
 
 }
