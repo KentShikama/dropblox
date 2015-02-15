@@ -2,8 +2,8 @@ import java.util.*;
 
 public class Score {
     private static final int AGGREGATE_HEIGHT_CONSTANT = -2;
-    private static final int MAX_HEIGHT_CONSTANT = -4;
-    private static final int NUMBER_OF_HOLES_CONSTANT = -2;
+    private static final int MAX_HEIGHT_CONSTANT = -10;
+    private static final int NUMBER_OF_HOLES_CONSTANT = -5;
     private static final int BUMPINESS_CONSTANT = -1;
 
     public static int score(Board board) {
@@ -12,8 +12,8 @@ public class Score {
         int num_holes = calculateNumberOfHoles(board);
         int bumpiness = calculateBumpiness(board);
         return AGGREGATE_HEIGHT_CONSTANT * aggregateHeight 
-                + MAX_HEIGHT_CONSTANT * maxHeight + NUMBER_OF_HOLES_CONSTANT * num_holes
-                    + BUMPINESS_CONSTANT * bumpiness;
+                + MAX_HEIGHT_CONSTANT * maxHeight + NUMBER_OF_HOLES_CONSTANT * num_holes +
+                     BUMPINESS_CONSTANT * bumpiness;
     }
 
     private static int calculateAggregateHeight(Board board) {
@@ -61,12 +61,12 @@ public class Score {
     }
 
     private static int calculateBumpiness(Board board){
-        ArrayList<Integer> heights = new ArrayList<Integer>(board.COLS);
-        for(int j=0;j<board.COLS;j++){
-            for(int i=0;j<board.ROWS;i++){
+        ArrayList<Integer> heights = new ArrayList<Integer>();
+        for(int j = 0;j < board.COLS - 1; j++){
+            for(int i = 0; i < board.ROWS - 1; i++){
                 if (board._bitmap[i][j]!=0){
-                    int height = board.ROWS-i;
-                    heights.set(j,height);
+                    int height = board.ROWS - i;
+                    heights.add(height);
                     break;
                 }
             }

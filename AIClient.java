@@ -1,63 +1,48 @@
 import java.util.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.simple.*;
 
 public class AIClient {
 
-	public static final int BREADTH = 1;
+	public static final int BREADTH = 3;
 
 	public static void main(String[] argv) {
 		Board originalBoard = Board.initializeBoardFromJSON((JSONObject) JSONValue.parse(argv[0]));
 		Map<Board, ArrayList<String>> generatedBoardsMap = generateBoards(originalBoard);
-		ArrayList<Board> bestThreeBoards = chooseTopThree(new ArrayList<Board>(generatedBoardsMap.keySet()));
-		
-		Map<Board, Board> bestBoardToBestThreeBoards = new HashMap<Board, Board>();
-		
-		for (Board board : bestThreeBoards) {
-			Board blockChangedBoard = new Board(board._bitmap, board._preview[0], board._preview); // Change later
-			Map<Board, ArrayList<String>> generatedBoardsMap2 = generateBoards(board);
-			Board bestBoardOfBestThreeBoards = chooseTop(new ArrayList<Board>(generatedBoardsMap2.keySet()));
-			bestBoardToBestThreeBoards.put(bestBoardOfBestThreeBoards, board);
-		}
-		
-		Set<Board> bestBoards = bestBoardToBestThreeBoards.keySet();
-		Board bestBoard = chooseTop(new ArrayList<Board>(bestBoards));
+		Board bestBoard1 = chooseTop(new ArrayList<Board>(generatedBoardsMap.keySet()));
+
+	//	Board blockChangedBoard = new Board(bestBoard1._bitmap, bestBoard1._preview[0], bestBoard1._preview); // Change later
+	//	Map<Board, ArrayList<String>> generatedBoardsMap2 = generateBoards(blockChangedBoard);
+	//	Board bestBoard2 = chooseTop(new ArrayList<Board>(generatedBoardsMap2.keySet()));
+	//	bestBoardToBestThreeBoards.put(bestBoardOfBestThreeBoards, board);
+
+	//	Set<Board> bestBoards = bestBoardToBestThreeBoards.keySet();
+	//	Board bestBoard = chooseTop(new ArrayList<Board>(bestBoards));
 		Board parentBoard = bestBoardToBestThreeBoards.get(bestBoard);
 		ArrayList<String> commands = generatedBoardsMap.get(parentBoard);
 		
 		for (String command : commands) {
 			System.out.println(command);
 		}
-		System.out.println("drop");
 		System.out.flush();
 	}
 
     public static ArrayList<Board> chooseTopThree(ArrayList<Board> boards){
-    	ArrayList<Integer> scores = new ArrayList<Integer>(boards.size());
-    	for (int i=0;i<boards.size();i++){
-    		scores.set(i,Score.score(boards.get(i)));
-    	}
-    	ArrayList<Board> best = new ArrayList<Board>(BREADTH);
-    	for(int i=0;i < BREADTH;i++){
-    		int max = Collections.max(scores);
-    		int index = scores.indexOf(max);
-    		best.add(boards.get(index));
-    		scores.remove(max);
-    		boards.remove(boards.get(index));
-    	}
-    	return best;
+
     }
 
 	public static Board chooseTop(ArrayList<Board> boards){
-		ArrayList<Integer> scores = new ArrayList<Integer>(boards.size());
-		for (int i=0;i<boards.size();i++){
-			scores.set(i,Score.score(boards.get(i)));
+		int maxScore = -100000000;
+		Board bestBoard = boards.get(0);
+		for (Board board: boards) {
+			if (Score.score(board) > maxScore) {
+				maxScore = Score.score(board);
+				bestBoard = board;
+			}
 		}
-		ArrayList<Board> best = new ArrayList<Board>(BREADTH);
-		int max = Collections.max(scores);
-		int index = scores.indexOf(max);
-		return boards.get(index);
+		return bestBoard;
 	}
 
 	private static Map<Board, ArrayList<String>> generateBoards(Board board) {
